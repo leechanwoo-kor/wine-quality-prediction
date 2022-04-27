@@ -26,7 +26,7 @@
 
 ## 1- Analyze and explore data 😃😃😃
 
-**ln [1]:**
+**In [1]:**
 ```
 # Importing the basic librarires fot analysis
 
@@ -42,14 +42,14 @@ import plotly.graph_objects as go
 import plotly.express as px
 ```
 
-**ln [2]:**
+**In [2]:**
 ```
 # Importing the dataset
 
 df=pd.read_csv("../input/wine-quality-dataset/WineQT.csv")
 ```
 
-**ln [3]:**
+**In [3]:**
 ```
 # looking the data set 💥💥💥
 
@@ -158,7 +158,7 @@ print("The Value Quality ",df["quality"].unique())
 
 The Value Quality  [5 6 7 4 8 3]
 
-**ln [9]:**
+**In [9]:**
 ```
 # graph all the data set - just for looking
 df.plot(figsize=(15,7))
@@ -294,3 +294,249 @@ px.scatter(df, x="free sulfur dioxide", y="total sulfur dioxide",animation_frame
 - 8 - Sulphates
 
 ### If making wine, please pay attention to these items.
+
+## 2 -Building a Machine Learning Model 😃😃😃😃😃
+
+**In [17]:**
+```
+# Importing the basic librarires for building model
+
+
+from sklearn.linear_model import LinearRegression ,LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error ,mean_squared_error, median_absolute_error,confusion_matrix,accuracy_score
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.svm import SVC ,SVR
+```
+
+**In [18]:**
+```
+# Defined X value and y value , and split the data train
+
+X = df.drop(columns="quality")           
+y = df["quality"]    # y = quality
+```
+
+X Train :  (857, 11)
+X Test  :  (286, 11)
+Y Train :  (857,)
+Y Test  :  (286,)
+
+### 1 -linear_model
+**In [20]:**
+```
+# using the model LinearRegression
+LR_model=LinearRegression()
+
+# fit model
+LR_model.fit(X_train,y_train)
+
+# Score X and Y - test and train
+
+print("Score the X-train with Y-train is : ", LR_model.score(X_train,y_train))
+print("Score the X-test  with Y-test  is : ", LR_model.score(X_test,y_test))
+
+# Expected value Y using X test
+y_pred_LR=LR_model.predict(X_test)
+
+# Model Evaluation
+print( " Model Evaluation Linear R : mean absolute error is ", mean_absolute_error(y_test,y_pred_LR))
+print(" Model Evaluation Linear R : mean squared  error is " , mean_squared_error(y_test,y_pred_LR))
+print(" Model Evaluation Linear R : median absolute error is " ,median_absolute_error(y_test,y_pred_LR))
+```
+
+Score the X-train with Y-train is :  0.3766893166865495
+Score the X-test  with Y-test  is :  0.3487901433645896
+Model Evaluation Linear R : mean absolute error is  0.4742577332205526
+Model Evaluation Linear R : mean squared  error is  0.37215517566167367
+Model Evaluation Linear R : median absolute error is  0.3771988566534432
+
+**In [21]:**
+```
+# using the model Logistic Regression
+
+Lo_model=LogisticRegression(solver='liblinear')
+
+# fit model
+
+Lo_model.fit(X_train,y_train)
+
+
+# Score X and Y - test and train model Logistic Regression
+
+print("Score the X-train with Y-train is : ", Lo_model.score(X_train,y_train))
+print("Score the X-test  with Y-test  is : ", Lo_model.score(X_test,y_test))
+
+# Expected value Y using X test
+y_pred_Lo=Lo_model.predict(X_test)
+
+# Model Evaluation
+print( " Model Evaluation Logistic R : mean absolute error is ", mean_absolute_error(y_test,y_pred_Lo))
+print(" Model Evaluation Logistic R : mean squared  error is " , mean_squared_error(y_test,y_pred_Lo))
+print(" Model Evaluation Logistic R : median absolute error is " ,median_absolute_error(y_test,y_pred_Lo)) 
+
+print(" Model Evaluation Logistic R : accuracy score " , accuracy_score(y_test,y_pred_Lo))
+```
+
+Score the X-train with Y-train is :  0.5869311551925321
+Score the X-test  with Y-test  is :  0.6258741258741258
+Model Evaluation Logistic R : mean absolute error is  0.4020979020979021
+Model Evaluation Logistic R : mean squared  error is  0.458041958041958
+Model Evaluation Logistic R : median absolute error is  0.0
+Model Evaluation Logistic R : accuracy score  0.6258741258741258
+
+### Decision Tree Classifier
+
+**In [22]:**
+```
+# using the model Decision Tree Classifier
+Tree_model=DecisionTreeClassifier(max_depth=10)
+# fit model
+Tree_model.fit(X_train,y_train)
+
+# Score X and Y - test and train
+
+print("Score the X-train with Y-train is : ", Tree_model.score(X_train,y_train))
+print("Score the X-test  with Y-test  is : ", Tree_model.score(X_test,y_test))
+```
+
+Score the X-train with Y-train is :  0.9241540256709452
+Score the X-test  with Y-test  is :  0.5314685314685315
+
+**In [23]:**
+```
+# Select  Important columns
+
+print("The Important columns \n",Tree_model.feature_importances_)
+```
+
+The Important columns 
+[0.069496   0.13303545 0.06692639 0.07171826 0.08538616 0.07811518 0.09024489 0.04018572 0.05969526 0.11619673 0.18899996]
+
+**In [24]:**
+```
+df.head(0)
+```
+
+**Out[24]:**
+
+|fixed acidity|volatile acidity|citric acid|residual sugar|chlorides|free sulfur dioxide|total sulfur dioxide|density|pH|sulphates|alcohol|quality|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+
+- Note, the feature importances for quality in the Decision Tree, column Alcohol = 19%, we said in analysis
+
+**In [25]:**
+```
+print("The classes ",Tree_model.classes_)
+
+y_pred_T =Tree_model.predict(X_test)
+
+print(" Model Evaluation Decision Tree : accuracy score " , accuracy_score(y_test,y_pred_T))
+```
+
+The classes  [3 4 5 6 7 8]
+Model Evaluation Decision Tree : accuracy score  0.5314685314685315
+
+### Model SVM
+**In [26]:**
+```
+# using the model SVC
+svc_model=SVC(C=50,kernel="rbf")
+
+# fit model
+svc_model.fit(X_train,y_train)
+
+y_pred_svc =svc_model.predict(X_test)
+
+print("Score the X-train with Y-train is : ", svc_model.score(X_train,y_train))
+print("Score the X-test  with Y-test  is : ", svc_model.score(X_test,y_test))
+print(" Model Evaluation Decision Tree : accuracy score " , accuracy_score(y_test,y_pred_svc))
+```
+
+Score the X-train with Y-train is :  0.5950991831971996
+Score the X-test  with Y-test  is :  0.6433566433566433
+Model Evaluation Decision Tree : accuracy score  0.6433566433566433
+
+**In [27]:**
+```
+# using the model SVR
+
+svr_model=SVR(degree=1,coef0=1, tol=0.001, C=1.5,epsilon=0.001)
+
+# fit model
+svr_model.fit(X_train,y_train)
+
+y_pred_svr =svc_model.predict(X_test)
+
+print("Score the X-train with Y-train is : ", svr_model.score(X_train,y_train))
+print("Score the X-test  with Y-test  is : ", svr_model.score(X_test,y_test))
+print(" Model Evaluation Decision Tree : accuracy score " , accuracy_score(y_test,y_pred_svr))
+```
+
+Score the X-train with Y-train is :  0.14069185408666396
+Score the X-test  with Y-test  is :  0.23501709956140815
+Model Evaluation Decision Tree : accuracy score  0.6433566433566433
+
+### Neighbors model
+**In [28]:**
+```
+# using the model K Neighbors Classifier
+
+K_model = KNeighborsClassifier(n_neighbors = 5)
+K_model.fit(X_train, y_train)
+
+y_pred_k = K_model.predict(X_test)
+
+print("Score the X-train with Y-train is : ", K_model.score(X_train,y_train))
+print("Score the X-test  with Y-test  is : ", K_model.score(X_test,y_test))
+print(" Model Evaluation K Neighbors Classifier : accuracy score " , accuracy_score(y_test,y_pred_k))
+```
+
+Score the X-train with Y-train is :  0.6289381563593932
+Score the X-test  with Y-test  is :  0.5314685314685315
+Model Evaluation K Neighbors Classifier : accuracy score  0.5314685314685315
+
+## Model building results 🤕🤕🤕🤕
+
+### These models were selected and evaluated:
+
+### linear_model
+- 1- LinearRegression
+- Score the X-train with Y-train is : 0.37%
+- Score the X-test with Y-test is : 0.34%
+- Mean absolute error is 0.47%
+- Mean squared error is 0.37%
+- Median absolute error is 0.37%
+- 2- LogisticRegression
+- Score the X-train with Y-train is : 0.58%
+- Score the X-test with Y-test is : 0.62%
+- Mean absolute error is 0.40%
+- Mean squared error is 0.45%
+- Median absolute error is 0.0
+- Accuracy score 0.625%
+
+### Decision Tree Classifier
+- Score the X-train with Y-train is : 0.92%
+- Score the X-test with Y-test is : 0.54%
+- Accuracy score 0.54%
+
+### Model SVM
+- 1- SVC
+- Score the X-train with Y-train is : 0.59%
+- Score the X-test with Y-test is : 0.64%
+- Accuracy score 0.64%
+- 2-SVR
+- Score the X-train with Y-train is : 0.14%
+- Score the X-test with Y-test is : 0.23%
+- Accuracy score 0.64%
+
+### Neighbors model
+- Score the X-train with Y-train is : 0.62%
+- Score the X-test with Y-test is : 0.53%
+- Accuracy score 0.53%
+
+## The End 😊😊😊😊
+- Thank for reading my analysis , if you any questions or advice me please write in the comment .
